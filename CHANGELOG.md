@@ -1,3 +1,7 @@
+## 1.0.5
+
+- Fixed crash issue for Android 14. See [#1](https://github.com/akshaydoshi2/flutter_sim_data/issues/1)
+
 ## 1.0.4
 
 - Fixed an issue with ios podspec

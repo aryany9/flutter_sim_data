@@ -159,7 +159,7 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
       result.success(array.toString());
   }
 
-  @SuppressLint("UnspecifiedRegisterReceiverFlag")
+//  @SuppressLint("UnspecifiedRegisterReceiverFlag")
   void sendSMS(){
     String number = call.argument("phone");
     String message = call.argument("msg");
@@ -176,38 +176,46 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
         context,
         1,
         new Intent(sent),
-        PendingIntent.FLAG_IMMUTABLE
+        PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
       );
       deliveryPendingIntent = PendingIntent.getBroadcast(
         context,
         2,
         new Intent(delivered),
-        PendingIntent.FLAG_IMMUTABLE
+        PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
       );
 
-      context.registerReceiver(new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-        int res = getResultCode();
-        if(res == Activity.RESULT_OK){
-          Toast.makeText(context, "SMS Sent", Toast.LENGTH_SHORT).show();
-        }else{
-          Toast.makeText(context, "SMS not sent. Something went wrong!", Toast.LENGTH_SHORT).show();
-        }
-        }
-      }, new IntentFilter(sent));
 
-      context.registerReceiver(new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-        int res = getResultCode();
-        if(res == Activity.RESULT_OK){
-          Toast.makeText(context, "SMS delivered", Toast.LENGTH_SHORT).show();
-        }else{
-          Toast.makeText(context, "SMS not delivered", Toast.LENGTH_SHORT).show();
-        }
-        }
-      }, new IntentFilter(delivered));
+      context.registerReceiver(
+        new BroadcastReceiver() {
+          @Override
+          public void onReceive(Context context, Intent intent) {
+            int res = getResultCode();
+            if(res == Activity.RESULT_OK){
+              Toast.makeText(context, "SMS Sent", Toast.LENGTH_SHORT).show();
+            }else{
+              Toast.makeText(context, "SMS not sent. Something went wrong!", Toast.LENGTH_SHORT).show();
+            }
+          }
+        },
+        new IntentFilter(sent),
+        Context.RECEIVER_EXPORTED
+      );
+
+      context.registerReceiver(
+        new BroadcastReceiver() {
+          @Override
+          public void onReceive(Context context, Intent intent) {
+            int res = getResultCode();
+            if(res == Activity.RESULT_OK){
+              Toast.makeText(context, "SMS delivered", Toast.LENGTH_SHORT).show();
+            }else{
+              Toast.makeText(context, "SMS not delivered", Toast.LENGTH_SHORT).show();
+            }
+          }
+        }, new IntentFilter(delivered),
+        Context.RECEIVER_EXPORTED
+      );
 
       smsManager.sendTextMessage(number, null, message, sendPendingIntent, deliveryPendingIntent);
   }

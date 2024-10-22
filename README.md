@@ -46,3 +46,6 @@ _simDataPlugin.sendSMS(
 );
 ```
 
+### Roadmap
+1. Implement event channel to get sms status from broadcast receivers.
+
