@@ -164,6 +164,7 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
     String number = call.argument("phone");
     String message = call.argument("msg");
     Integer subId = call.argument("subId");
+    Boolean showToast = call.argument("showToast");
 
     String sent = "SMS_SENT";
     String delivered = "SMS_DELIVERED";
@@ -191,10 +192,12 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
           @Override
           public void onReceive(Context context, Intent intent) {
             int res = getResultCode();
-            if(res == Activity.RESULT_OK){
-              Toast.makeText(context, "SMS Sent", Toast.LENGTH_SHORT).show();
-            }else{
-              Toast.makeText(context, "SMS not sent. Something went wrong!", Toast.LENGTH_SHORT).show();
+            if (showToast != null && showToast) {
+              if(res == Activity.RESULT_OK){
+                Toast.makeText(context, "SMS Sent", Toast.LENGTH_SHORT).show();
+              }else{
+                Toast.makeText(context, "SMS not sent. Something went wrong!", Toast.LENGTH_SHORT).show();
+              }
             }
           }
         },
@@ -207,10 +210,12 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
           @Override
           public void onReceive(Context context, Intent intent) {
             int res = getResultCode();
-            if(res == Activity.RESULT_OK){
-              Toast.makeText(context, "SMS delivered", Toast.LENGTH_SHORT).show();
-            }else{
-              Toast.makeText(context, "SMS not delivered", Toast.LENGTH_SHORT).show();
+            if (showToast != null && showToast) {
+              if(res == Activity.RESULT_OK){
+                Toast.makeText(context, "SMS delivered", Toast.LENGTH_SHORT).show();
+              }else{
+                Toast.makeText(context, "SMS not delivered", Toast.LENGTH_SHORT).show();
+              }
             }
           }
         }, new IntentFilter(delivered),
