@@ -208,11 +208,13 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
           public void onReceive(Context context, Intent intent) {
             int res = getResultCode();
             String status;
-
+            String toastMessage;
             if (res == Activity.RESULT_OK) {
-              status = "SMS Sent Successfully";
+              status = "SENT";
+              toastMessage = "SMS Sent Successfully";
             } else {
-              status = "SMS Failed to Send";
+              status = "FAILED";
+              toastMessage = "SMS Failed to Send";
             }
 
             if (eventSink != null) {
@@ -220,7 +222,7 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
             }
 
             if (showToast != null && showToast) {
-              Toast.makeText(context, status, Toast.LENGTH_SHORT).show();
+              Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
             }
           }
         },
@@ -234,11 +236,13 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
           public void onReceive(Context context, Intent intent) {
             int res = getResultCode();
             String status;
-
+            String toastMessage;
             if (res == Activity.RESULT_OK) {
-              status = "SMS delivered";
+              status = "DELIVERED";
+              toastMessage = "SMS delivered";
             } else {
-              status = "SMS not delivered";
+              status = "UNDELIVERED";
+              toastMessage = "SMS not delivered";
             }
 
             if (eventSink != null) {
@@ -246,7 +250,7 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
             }
 
             if (showToast != null && showToast) {
-              Toast.makeText(context, status, Toast.LENGTH_SHORT).show();
+              Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
             }
           }
         }, new IntentFilter(delivered),
