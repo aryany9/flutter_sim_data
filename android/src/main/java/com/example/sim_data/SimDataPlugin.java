@@ -188,16 +188,28 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
 
       SmsManager smsManager = SmsManager.getSmsManagerForSubscriptionId(subId);
 
+      String packageName = context.getPackageName();
+    
+      Intent sentIntent = new Intent(sent);
+      sentIntent.setPackage(packageName); // Make explicit
+
+
+      // PendingIntents with explicit intents
       sendPendingIntent = PendingIntent.getBroadcast(
         context,
         1,
-        new Intent(sent),
+        sentIntent, // Use explicit intent
         PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
       );
+
+
+      Intent deliveredIntent = new Intent(delivered);
+      deliveredIntent.setPackage(packageName); // Make explicit
+      
       deliveryPendingIntent = PendingIntent.getBroadcast(
         context,
         2,
-        new Intent(delivered),
+        deliveredIntent, // Use explicit intent
         PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
       );
 
@@ -227,7 +239,7 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
           }
         },
         new IntentFilter(sent),
-        Context.RECEIVER_EXPORTED
+        Context.RECEIVER_NOT_EXPORTED // Block external access
       );
 
       context.registerReceiver(
@@ -254,7 +266,7 @@ public class SimDataPlugin implements FlutterPlugin, MethodCallHandler, Activity
             }
           }
         }, new IntentFilter(delivered),
-        Context.RECEIVER_EXPORTED
+        Context.RECEIVER_NOT_EXPORTED // Block external access
       );
 
       smsManager.sendTextMessage(number, null, message, sendPendingIntent, deliveryPendingIntent);
